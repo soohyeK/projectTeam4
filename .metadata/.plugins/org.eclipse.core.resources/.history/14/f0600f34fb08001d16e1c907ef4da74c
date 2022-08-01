@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="org.paldo.mapper.ProductMapper">
+
+	<!-- 상품 등록 -->
+  	<insert id="productEnroll">
+  	
+  		insert into vam_book(productID, companyId, productName, stock, price, discount, lastPrice, regDate, lastUpdate)
+		values(#{productID},#{companyId}, #{productName},#{stock},#{price},#{discount},#{lastPrice},#{regDate},#{lastUpdate})
+
+  	</insert>
+  	
+  	<!-- 상품 리스트 -->
+  	<select id="productGetList" resultType="org.paldo.domain.ShopProductVO">
+  	
+	  	<![CDATA[
+		select * from(
+		    select /*+INDEX_DESC(SHOP_PRODUCT PK_SHOP_PRODUCT)*/ rownum as rn, productID, companyID,
+		    productName, stock, price, discount, lastPrice, regDate, lastUpdate
+		    from SHOP_PRODUCT 
+		    where 
+		]]>    
+		
+		    <if test="keyword != null">
+		    
+			    productName like '%' || #{keyword} || '%' and
+			    
+		    </if>
+		     
+		<![CDATA[    
+		    rownum <= #{pageNum} * #{amount} 
+		    )
+		where rn > (#{pageNum} -1) * #{amount}		  	
+  		]]>
+  	
+  	</select>
+  	
+  	<!-- 상품 총 개수 -->
+  	<select id="productGetTotal" resultType="int">
+  	
+  		select count(*) from SHOP_PRODUCT
+  		
+  		<if test="keyword != null">
+  		
+  			where productName like '%' || #{keyword} || '%'
+  		</if>
+  		
+  	</select> 
+
+
+  </mapper>

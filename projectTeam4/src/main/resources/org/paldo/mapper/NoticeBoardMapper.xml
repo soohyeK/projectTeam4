@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.paldo.mapper.NoticeBoardMapper">
+
+<resultMap type="org.paldo.domain.ShopBoardVO" id="ShopBoardVO">
+	<result column="boardId" property="boardId" />
+	<result column="boardTitle" property="boardTitle" />
+	<result column="regdate" property="regDate" />
+	<result column="lastupdate" property="lastUpdate" />
+	<collection property="ShopAdminVO" resultMap="ShopAdminVO"/>
+</resultMap>
+<resultMap type="org.paldo.domain.ShopAdminVO" id="ShopAdminVO">
+	<result column="adminname" property="adminName" />
+</resultMap>
+
+<select id="getList" resultType="org.paldo.domain.ShopBoardVO" resultMap="ShopBoardVO">
+	<![CDATA[
+		select boardId, boardtitle, adminId, regdate, lastupdate from shop_board 
+		 where  boardid > 0;
+	]]>
+</select>
+<insert id="insert">
+	insert into shop_board (boardId, adminId, boardTitle, boardContent, regDate, lastUpdate)
+	values (seq_shopboard.nextval, #{adminId}, #{boardTitle}, #{boardContent}, sysdate, sysdate)
+</insert>
+
+<insert id="insertSelectKey">
+	<selectKey keyProperty="boardId" order="BEFORE" resultType="long">
+		select seq_shopboard.nextval from dual
+	</selectKey>
+	insert into shop_board (boardId, adminId, boardTitle, boardContent, regDate, lastUpdate)
+	values (#{boardId}, #{adminId}, #{boardTitle,jdbcType=VARCHAR}, #{boardContent}, sysdate, sysdate)
+</insert>
+
+<select id ="get" resultType="org.paldo.domain.ShopBoardVO">
+	select * from shop_board where boardId = #{boardId}
+</select>
+
+<update id="modify">
+	update shop_board
+	set boardTitle=#{boardTitle},
+		boardContent=#{boardContent},
+		lastUpdate = sysdate
+		where boardId=#{boardId}
+</update>
+
+<delete id = "delete">
+	delete from shop_board where boardId=#{boardId}
+</delete>
+
+<select id="getListWithPaging" resultType="org.paldo.domain.ShopBoardVO">
+	<![CDATA[
+		select boardid, boardtitle, adminid, boardcontent, regdate, lastupdate
+		from(
+		select /*+INDEX_DESC(shop_board pk_shop_board)*/
+			rownum rn, boardid, adminid, boardtitle, boardcontent, regdate, lastupdate
+				from shop_board
+				where
+	]]>
+	<include refid="CriteriaNotice"></include>
+	
+	<![CDATA[
+		rownum <=#{pageNum} * #{amount})
+		where rn >(#{pageNum}-1) * #{amount}
+	]]>
+</select>
+
+<select id ="getTotalCount" resultType="int">
+	select count(*) from shop_board where
+	<include refid="CriteriaNotice"></include>
+	boardId > 0
+</select>
+<sql id="CriteriaNotice">
+	<trim prefix="(" suffix =") AND " prefixOverrides="OR">
+		<foreach item="type" collection="typeArr">
+			<trim prefix="OR">
+				<choose>
+					<when test="type=='T'.toString()">
+						boardTitle like '%'||#{keyword}||'%'
+					</when>
+					<when test="type=='C'.toString()">
+						boardContent like '%'||#{keyword}||'%'
+					</when>
+					<when test="type=='W'.toString()">
+						adminId like '%'||#{keyword}||'%'
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+	</trim>
+</sql>
+
+</mapper>
+

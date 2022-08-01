@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="org.paldo.mapper.ProductViewMapper">
+  <select id="getList" resultType="org.paldo.domain.ShopProductVO">
+	<![CDATA[
+		select productId, productName  from shop_product
+		order by regDate
+		 
+	]]>
+</select>
+	<select id ="getProduct" resultType = "org.paldo.domain.ShopProductDetailVO">
+		select b.productid, a.productName, b.companyid, b.location, b.alcohol, b.productcontent
+		from shop_product a, shop_product_detail b
+		where a.productid = b.productid and a.productId = #{productId}
+	</select>
+
+ </mapper>

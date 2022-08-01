@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   <mapper namespace="org.paldo.mapper.MemberMapper">
+   
+  	<insert id="memberJoin">
+  		insert into SHOP_MEMBER
+  		values
+  		(
+  		#{memberId}, 
+  		#{memberPw}, 
+  		#{memberName}, 
+  		#{memberBirth},
+  		#{memberEmail}, 
+  		#{memberAdd1}, 
+  		#{memberAdd2}, 
+  		#{tel},
+  		0,
+  		0,
+  		sysdate,
+  		sysdate,
+  		sysdate
+  		)
+  	</insert>
+  	
+  	
+  	<!-- 로그인 -->
+	<select id="memberLogin" resultType="org.paldo.domain.ShopMemberVO">
+
+		select memberId, memberName from shop_member 
+		where
+		memberId = #{memberId} and memberPw = #{memberPw}
+
+	</select>
+	
+
+	<!-- 아이디 중복검사 -->
+  	<select id="idCheck" resultType="int">
+  	
+  		select count(*) from shop_member where memberId = #{memberId}
+  	
+  	</select>
+  	
+  </mapper>

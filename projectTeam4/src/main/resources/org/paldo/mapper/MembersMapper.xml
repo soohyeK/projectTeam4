@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="org.paldo.mapper.MembersMapper">
+  
+	 <!-- 회원 등록 -->
+      <insert id="memberEnroll">
+      
+          insert into SHOP_MEMBER(memberID, memberPW, memberName, memberBirth, memberEmail, memberAdd1, memberAdd2, tel) 
+          values(#{memberID}, #{memberPW}, #{memberName}, #{memberBirth}, #{memberEmail}, #{memberAdd1}, #{memberAdd2}, #{tel} )
+ 
+      </insert>
+      
+      <!-- 회원 목록 -->
+      <select id="memberGetList" resultType="org.paldo.domain.ShopMemberVO">
+      
+      <![CDATA[
+          select * from (
+              select /*+INDEX_DESC(SHOP_MEMBER PK_SHOP_MEMBER) */ 
+                  rownum as rn, memberID, memberPW, memberName, memberBirth, memberEmail, memberAdd1, memberAdd2
+            from SHOP_MEMBER 
+            where
+             
+    ]]>         
+            <if test="keyword != null">
+                memberName like '%'||#{keyword}||'%' and
+            </if>
+            
+    <![CDATA[        
+             rownum <= #{pageNum}*#{amount}
+            )
+        where rn > (#{pageNum} - 1) * #{amount}
+      ]]>
+      
+      </select>
+      
+      <!-- 회원 수 -->
+      <select id="memberGetTotal" resultType="int">
+      
+          select count(*) from SHOP_MEMBER
+          
+          <if test="keyword != null">
+          
+             where memberName like '%' || #{keyword} || '%'
+          
+          </if>
+          
+      </select> 
+	
+	
+	</mapper>
