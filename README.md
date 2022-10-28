@@ -1,4 +1,4 @@
-# 팔도주류 프로젝트
+# 팔도주류 팀 프로젝트
 
 1.개요
 =============
@@ -9,16 +9,18 @@
 * 목적 : 이젠 아카데미 국비과정 - 응용 SW 엔지니어링 과정 팀 프로젝트
 
 * 개발 환경 및 사용 기술
-  - Java JDK 1.8.0_261
-  - Spring Framework 4.3.4, Apache Tomcat 9.0, MyBatis 3.0
+  - JDK 1.8
+  - Spring Framework 4.3.4, Apache Tomcat 9.0
+  - MyBatis,JQuery
   - ORACLE 11XE, SQL DEVELOPER
-  - Lombok 1.18.0, LOG4J, jQuery 1.12.1, WebSocket, Maven 4.0.0
+  - Lombok 1.18.0, LOG4J, WebSocket, Maven 4.0.0
  
 * 담당 구현 파트
   - 프로젝트 개발환경 구축, 설계 참여
   - 개인 DB관리
   - 회원가입/로그인 페이지 구현
-  - 상품 상세페이지 구현 (수량 조절, 장바구니, 목록으로 돌아가기)
+  - 상품 상세페이지 구현
+  - 장바구니
   - GitHub 레포지토리 관리
   
   
